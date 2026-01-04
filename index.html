@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TasaVe - Tasas de Cambio Venezuela</title>
+    <meta name="description"
+        content="Consulta las tasas de cambio en Venezuela: Dólar BCV, Euro BCV y USDT (Binance P2P). Calculadora reactiva bidireccional.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom scrollbar for dark mode */
+        body.dark::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        body.dark::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+
+        body.dark::-webkit-scrollbar-thumb {
+            background: #00ff88;
+            border-radius: 4px;
+        }
+
+        /* Smooth transitions */
+        * {
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        /* Custom animations */
+        @keyframes pulse-glow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+            }
+
+            50% {
+                box-shadow: 0 0 30px rgba(0, 255, 136, 0.6);
+            }
+        }
+
+        .pulse-glow {
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+
+        /* Accordion transition */
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .accordion-content.active {
+            max-height: 2000px;
+        }
+
+        /* Input focus effects */
+        input:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.3);
+        }
+    </style>
+</head>
+
+<body class="min-h-screen bg-gray-50 dark:bg-[#0a0a0a] text-gray-900 dark:text-white transition-colors duration-300">
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <!-- Header -->
+        <header class="flex justify-between items-center mb-8">
+            <div>
+                <h1
+                    class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-[#00ff88] to-[#ffd500] bg-clip-text text-transparent">
+                    TasaVe
+                </h1>
+                <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Tasas de cambio en tiempo real</p>
+            </div>
+            <button id="themeToggle"
+                class="p-3 rounded-lg bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700">
+                <svg class="w-6 h-6 hidden dark:block" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                </svg>
+                <svg class="w-6 h-6 block dark:hidden" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd"
+                        d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+                        clip-rule="evenodd"></path>
+                </svg>
+            </button>
+        </header>
+
+        <!-- Last Update Info -->
+        <div id="lastUpdate" class="text-center text-sm text-gray-600 dark:text-gray-400 mb-6"></div>
+
+        <!-- Exchange Rates Card - REMOVED per user request -->
+        <!-- User wants only the calculator visible, rates shown in gray before entering values -->
+
+        <!-- Reactive Calculator -->
+        <div
+            class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 mb-8 border border-gray-200 dark:border-gray-800">
+            <h2 class="text-xl font-semibold mb-6 text-center">Calculadora</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Bolívares Input -->
+                <div>
+                    <label for="inputVes" class="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
+                        Bolívares (VES)
+                    </label>
+                    <div class="relative">
+                        <span class="absolute left-3 top-3 text-gray-500">Bs.</span>
+                        <input type="text" id="inputVes"
+                            class="w-full pl-12 pr-4 py-3 rounded-lg bg-gray-100 dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 focus:border-[#00ff88]"
+                            placeholder="0,00">
+                    </div>
+                </div>
+
+                <!-- USD Input -->
+                <div>
+                    <label for="inputUsd" class="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
+                        Dólar BCV (USD) <span id="labelUsd" class="text-gray-400 dark:text-gray-500 font-normal">- Bs.
+                            --</span>
+                    </label>
+                    <div class="relative">
+                        <span class="absolute left-3 top-3 text-gray-500">$</span>
+                        <input type="text" id="inputUsd"
+                            class="w-full pl-12 pr-4 py-3 rounded-lg bg-gray-100 dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 focus:border-[#00ff88]"
+                            placeholder="0.00">
+                    </div>
+                </div>
+
+                <!-- EUR Input -->
+                <div>
+                    <label for="inputEur" class="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
+                        Euro BCV (EUR) <span id="labelEur" class="text-gray-400 dark:text-gray-500 font-normal">- Bs.
+                            --</span>
+                    </label>
+                    <div class="relative">
+                        <span class="absolute left-3 top-3 text-gray-500">€</span>
+                        <input type="text" id="inputEur"
+                            class="w-full pl-12 pr-4 py-3 rounded-lg bg-gray-100 dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 focus:border-[#00ff88]"
+                            placeholder="0.00">
+                    </div>
+                </div>
+
+                <!-- USDT Input -->
+                <div>
+                    <label for="inputUsdt" class="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
+                        USDT (Binance P2P) <span id="labelUsdt" class="text-gray-400 dark:text-gray-500 font-normal">-
+                            Bs. --</span>
+                    </label>
+                    <div class="relative">
+                        <span class="absolute left-3 top-3 text-gray-500">₮</span>
+                        <input type="text" id="inputUsdt"
+                            class="w-full pl-12 pr-4 py-3 rounded-lg bg-gray-100 dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 focus:border-[#00ff88]"
+                            placeholder="0.00">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Refresh Button -->
+        <div class="text-center mb-8">
+            <button id="refreshBtn"
+                class="px-8 py-3 bg-gradient-to-r from-[#00ff88] to-[#00cc6a] text-gray-900 font-semibold rounded-lg hover:shadow-lg transform hover:scale-105 transition-all duration-200">
+                <span class="flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+                        </path>
+                    </svg>
+                    Actualizar Tasas
+                </span>
+            </button>
+        </div>
+
+        <!-- Important Information Section (Accordion) -->
+        <div
+            class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-800 overflow-hidden">
+            <button id="accordionBtn"
+                class="w-full px-6 py-4 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                <h3 class="text-lg font-semibold text-[#ffd500]">⚠️ IMPORTANTE</h3>
+                <svg id="accordionIcon" class="w-6 h-6 transform transition-transform" fill="currentColor"
+                    viewBox="0 0 20 20">
+                    <path fill-rule="evenodd"
+                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                        clip-rule="evenodd"></path>
+                </svg>
+            </button>
+            <div id="accordionContent" class="accordion-content px-6 pb-0">
+                <div class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed space-y-4 pb-6">
+                    <p>
+                        Los datos mostrados en esta aplicación tienen un carácter <strong>exclusivamente
+                            informativo</strong>. TasaVe no representa ni está afiliado a ninguna entidad gubernamental
+                        y no establece ninguna de las tasas aquí publicadas. La única tasa oficial en Venezuela es la
+                        publicada por el Banco Central de Venezuela (BCV), disponible en su sitio web (<a
+                            href="https://www.bcv.org.ve/" target="_blank"
+                            class="text-[#00ff88] hover:underline">https://www.bcv.org.ve/</a>).
+                    </p>
+                    <p>
+                        En la aplicación, la tasa oficial del BCV se actualiza a las 5:00 p.m. (hora de Venezuela) en
+                        los días hábiles en los que dicho organismo publica un nuevo valor. Esta tasa solo se refleja en
+                        la calculadora cuando entra en vigencia según lo indicado oficialmente por el BCV, es decir,
+                        cuando corresponde a la fecha de valor establecida en la publicación.
+                    </p>
+                    <p>
+                        Se muestra asimismo una referencia del valor del USDT (Tether) frente al bolívar, calculada a
+                        partir de anuncios publicados en el mercado P2P de Binance. El USDT es una stablecoin creada
+                        para mantener cierta paridad con el dólar estadounidense, aunque no es dinero fiduciario ni debe
+                        interpretarse como una tasa oficial. (1 USDT ≠ 1 USD).
+                    </p>
+                    <p>
+                        La Tasa USDT (P2P) se actualiza automáticamente cada hora y debe entenderse únicamente como una
+                        referencia estadística. En este tipo de mercado digital <strong>no existe un precio único, sino
+                            un rango de valores que dependen de las distintas ofertas de compra y venta publicadas de
+                            manera simultánea</strong>. Por lo tanto, la cifra mostrada no equivale a un precio
+                        garantizado ni constituye una recomendación financiera. La aplicación no intermedia operaciones,
+                        no fija precios y no mantiene afiliación ni respaldo con Binance ni con ninguna otra plataforma.
+                    </p>
+                    <p>
+                        Es fundamental aclarar que este rango corresponde exclusivamente a las dinámicas de un mercado
+                        P2P internacional y no debe confundirse con las referencias que puedan mostrar otras plataformas
+                        nacionales, ya que se trata de mercados distintos.
+                    </p>
+                    <p>
+                        Las decisiones que los usuarios tomen con base en esta información son de su exclusiva
+                        responsabilidad.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-8 text-center text-sm text-gray-600 dark:text-gray-400">
+            <p>TasaVe &copy; 2026 - Solo con fines informativos</p>
+        </footer>
+    </div>
+
+    <script>
+        // Global state
+        let exchangeRates = {
+            bcv_usd: 0,
+            bcv_eur: 0,
+            usdt_avg: 0,
+            last_update: ''
+        };
+
+        let isUpdatingCalculator = false;
+
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+
+        // Load saved theme or default to dark
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        html.classList.toggle('dark', savedTheme === 'dark');
+
+        themeToggle.addEventListener('click', () => {
+            const isDark = html.classList.toggle('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        });
+
+        // Accordion Toggle
+        const accordionBtn = document.getElementById('accordionBtn');
+        const accordionContent = document.getElementById('accordionContent');
+        const accordionIcon = document.getElementById('accordionIcon');
+
+        accordionBtn.addEventListener('click', () => {
+            accordionContent.classList.toggle('active');
+            accordionIcon.classList.toggle('rotate-180');
+        });
+
+        // Format number to Venezuelan currency format (Bs. 1.234,56)
+        function formatVES(amount) {
+            if (isNaN(amount) || amount === null || amount === undefined) return 'Bs. 0,00';
+            return 'Bs. ' + amount.toLocaleString('de-DE', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        // Format number to standard decimal format (1,234.56)
+        function formatDecimal(amount, decimals = 2) {
+            if (isNaN(amount) || amount === null || amount === undefined) return '0.00';
+            return amount.toLocaleString('en-US', {
+                minimumFractionDigits: decimals,
+                maximumFractionDigits: decimals
+            });
+        }
+
+        // Parse Venezuelan format to number
+        function parseVES(str) {
+            if (!str) return 0;
+            // Remove currency symbol and spaces
+            str = str.replace(/Bs\.?\s*/g, '').trim();
+            // Replace dots (thousand separators) and convert comma to dot
+            return parseFloat(str.replace(/\./g, '').replace(',', '.')) || 0;
+        }
+
+        // Parse standard decimal format to number
+        function parseDecimal(str) {
+            if (!str) return 0;
+            // Remove dollar/euro signs and spaces
+            str = str.replace(/[$€₮\s]/g, '').trim();
+            // Replace commas (thousand separators)
+            return parseFloat(str.replace(/,/g, '')) || 0;
+        }
+
+        // Load exchange rates from JSON
+        async function loadExchangeRates() {
+            try {
+                const response = await fetch('./data.json?nocache=' + new Date().getTime());
+                if (!response.ok) throw new Error('Network error');
+
+                const data = await response.json();
+                exchangeRates = data;
+
+                // Update labels in calculator with rates (in gray)
+                document.getElementById('labelUsd').textContent = `- ${formatVES(data.bcv_usd)}`;
+                document.getElementById('labelEur').textContent = `- ${formatVES(data.bcv_eur)}`;
+                document.getElementById('labelUsdt').textContent = `- ${formatVES(data.usdt_avg)}`;
+
+                // Update last update time
+                if (data.last_update) {
+                    const updateDate = new Date(data.last_update);
+                    document.getElementById('lastUpdate').textContent =
+                        `Última actualización: ${updateDate.toLocaleString('es-VE', {
+                            dateStyle: 'short',
+                            timeStyle: 'short'
+                        })}`;
+                }
+
+            } catch (error) {
+                console.error('Error loading exchange rates:', error);
+                document.getElementById('labelUsd').textContent = '- Error';
+                document.getElementById('labelEur').textContent = '- Error';
+                document.getElementById('labelUsdt').textContent = '- Error';
+                document.getElementById('lastUpdate').textContent = 'Error de conexión';
+            }
+        }
+
+        // Calculator Logic - Reactive and bidirectional
+        const inputVes = document.getElementById('inputVes');
+        const inputUsd = document.getElementById('inputUsd');
+        const inputEur = document.getElementById('inputEur');
+        const inputUsdt = document.getElementById('inputUsdt');
+
+        function updateCalculator(sourceInput) {
+            if (isUpdatingCalculator) return;
+            isUpdatingCalculator = true;
+
+            let vesAmount = 0;
+
+            // Determine source and calculate VES
+            if (sourceInput === 'ves') {
+                vesAmount = parseVES(inputVes.value);
+            } else if (sourceInput === 'usd') {
+                const usdAmount = parseDecimal(inputUsd.value);
+                vesAmount = usdAmount * exchangeRates.bcv_usd;
+            } else if (sourceInput === 'eur') {
+                const eurAmount = parseDecimal(inputEur.value);
+                vesAmount = eurAmount * exchangeRates.bcv_eur;
+            } else if (sourceInput === 'usdt') {
+                const usdtAmount = parseDecimal(inputUsdt.value);
+                vesAmount = usdtAmount * exchangeRates.usdt_avg;
+            }
+
+            // Update all other fields
+            if (sourceInput !== 'ves') {
+                inputVes.value = formatVES(vesAmount).replace('Bs. ', '');
+            }
+            if (sourceInput !== 'usd' && exchangeRates.bcv_usd > 0) {
+                inputUsd.value = formatDecimal(vesAmount / exchangeRates.bcv_usd);
+            }
+            if (sourceInput !== 'eur' && exchangeRates.bcv_eur > 0) {
+                inputEur.value = formatDecimal(vesAmount / exchangeRates.bcv_eur);
+            }
+            if (sourceInput !== 'usdt' && exchangeRates.usdt_avg > 0) {
+                inputUsdt.value = formatDecimal(vesAmount / exchangeRates.usdt_avg);
+            }
+
+            isUpdatingCalculator = false;
+        }
+
+        // Add event listeners for calculator inputs
+        inputVes.addEventListener('input', () => updateCalculator('ves'));
+        inputUsd.addEventListener('input', () => updateCalculator('usd'));
+        inputEur.addEventListener('input', () => updateCalculator('eur'));
+        inputUsdt.addEventListener('input', () => updateCalculator('usdt'));
+
+        // Refresh button
+        document.getElementById('refreshBtn').addEventListener('click', () => {
+            loadExchangeRates();
+        });
+
+        // Initial load
+        loadExchangeRates();
+    </script>
+</body>
+
+</html>
