@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="dark">
 
 <head>
     <meta charset="UTF-8">
@@ -156,8 +156,8 @@
             </div>
         </div>
 
-        <!-- Refresh Button -->
-        <div class="text-center mb-8">
+        <!-- Action Buttons -->
+        <div class="flex justify-center gap-4 mb-8">
             <button id="refreshBtn"
                 class="px-8 py-3 bg-gradient-to-r from-[#00ff88] to-[#00cc6a] text-gray-900 font-semibold rounded-lg hover:shadow-lg transform hover:scale-105 transition-all duration-200">
                 <span class="flex items-center justify-center gap-2">
@@ -167,6 +167,16 @@
                         </path>
                     </svg>
                     Actualizar Tasas
+                </span>
+            </button>
+            <button id="clearBtn"
+                class="px-8 py-3 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white font-semibold rounded-lg hover:shadow-lg transform hover:scale-105 transition-all duration-200">
+                <span class="flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                    Limpiar
                 </span>
             </button>
         </div>
@@ -388,6 +398,14 @@
         // Refresh button
         document.getElementById('refreshBtn').addEventListener('click', () => {
             loadExchangeRates();
+        });
+
+        // Clear button
+        document.getElementById('clearBtn').addEventListener('click', () => {
+            inputVes.value = '';
+            inputUsd.value = '';
+            inputEur.value = '';
+            inputUsdt.value = '';
         });
 
         // Initial load

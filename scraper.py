@@ -31,8 +31,17 @@ def get_bcv_rates():
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
         }
         
-        response = requests.get(url, headers=headers, timeout=10)
-        response.raise_for_status()
+        # Try with SSL verification first
+        try:
+            response = requests.get(url, headers=headers, timeout=15)
+            response.raise_for_status()
+        except requests.exceptions.SSLError:
+            # If SSL fails, try without verification (for GitHub Actions)
+            print("SSL verification failed, retrying without verification...")
+            import urllib3
+            urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+            response = requests.get(url, headers=headers, timeout=15, verify=False)
+            response.raise_for_status()
         
         soup = BeautifulSoup(response.content, 'html.parser')
         
