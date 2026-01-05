@@ -110,12 +110,18 @@
     <div class="container mx-auto px-4 py-8 max-w-4xl">
         <!-- Header -->
         <header class="flex justify-between items-center mb-8">
-            <div>
-                <h1
-                    class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-[#00ff88] to-[#ffd500] bg-clip-text text-transparent">
-                    TasaVe
-                </h1>
-                <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Tasas de cambio en tiempo real</p>
+            <div class="flex items-center gap-3">
+                <!-- Logo -->
+                <img src="favicoin_tasaVe.png" alt="TasaVe Logo" class="w-12 h-12 md:w-14 md:h-14">
+                <!-- Text -->
+                <div>
+                    <h1
+                        class="text-2xl md:text-4xl font-bold bg-gradient-to-r from-[#00ff88] to-[#ffd500] bg-clip-text text-transparent">
+                        TasaVe
+                    </h1>
+                    <p class="text-xs md:text-sm text-gray-600 dark:text-gray-400 mt-1">Tasas de cambio en tiempo real
+                    </p>
+                </div>
             </div>
             <button id="themeToggle"
                 class="p-3 rounded-lg bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700">
@@ -199,11 +205,11 @@
         </div>
 
         <!-- Action Buttons -->
-        <div class="flex justify-center gap-4 mb-8">
+        <div class="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 mb-8">
             <button id="refreshBtn"
-                class="px-8 py-3 bg-gradient-to-r from-[#00ff88] to-[#00cc6a] text-gray-900 font-semibold rounded-lg hover:shadow-lg transform hover:scale-105 transition-all duration-200">
+                class="px-4 py-2 sm:px-8 sm:py-3 bg-gradient-to-r from-[#00ff88] to-[#00cc6a] text-gray-900 font-semibold rounded-lg hover:shadow-lg transform hover:scale-105 transition-all duration-200 text-sm sm:text-base">
                 <span class="flex items-center justify-center gap-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
                         </path>
@@ -212,9 +218,9 @@
                 </span>
             </button>
             <button id="clearBtn"
-                class="px-8 py-3 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white font-semibold rounded-lg hover:shadow-lg transform hover:scale-105 transition-all duration-200">
+                class="px-4 py-2 sm:px-8 sm:py-3 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white font-semibold rounded-lg hover:shadow-lg transform hover:scale-105 transition-all duration-200 text-sm sm:text-base">
                 <span class="flex items-center justify-center gap-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
                         </path>
                     </svg>
