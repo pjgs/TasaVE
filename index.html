@@ -145,7 +145,7 @@
         <!-- Reactive Calculator -->
         <div
             class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 mb-8 border border-gray-200 dark:border-gray-800">
-            <h2 class="text-xl font-semibold mb-6 text-center">Calculadora</h2>
+            <h2 class="text-xl font-semibold mb-6 text-center">Conversor</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Bolívares Input -->
                 <div>
@@ -155,8 +155,18 @@
                     <div class="relative">
                         <span class="absolute left-3 top-3 text-gray-500">Bs.</span>
                         <input type="text" id="inputVes"
-                            class="w-full pl-12 pr-4 py-3 rounded-lg bg-gray-100 dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 focus:border-[#00ff88]"
+                            class="w-full pl-12 pr-12 py-3 rounded-lg bg-gray-100 dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 focus:border-[#00ff88]"
                             placeholder="0,00">
+                        <button id="copyVesBtn"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                            title="Copiar">
+                            <svg class="w-5 h-5 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
+                                </path>
+                            </svg>
+                        </button>
                     </div>
                 </div>
 
@@ -169,8 +179,18 @@
                     <div class="relative">
                         <span class="absolute left-3 top-3 text-gray-500">$</span>
                         <input type="text" id="inputUsd"
-                            class="w-full pl-12 pr-4 py-3 rounded-lg bg-gray-100 dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 focus:border-[#00ff88]"
+                            class="w-full pl-12 pr-12 py-3 rounded-lg bg-gray-100 dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 focus:border-[#00ff88]"
                             placeholder="0.00">
+                        <button id="copyUsdBtn"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                            title="Copiar">
+                            <svg class="w-5 h-5 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
+                                </path>
+                            </svg>
+                        </button>
                     </div>
                 </div>
 
@@ -183,8 +203,18 @@
                     <div class="relative">
                         <span class="absolute left-3 top-3 text-gray-500">€</span>
                         <input type="text" id="inputEur"
-                            class="w-full pl-12 pr-4 py-3 rounded-lg bg-gray-100 dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 focus:border-[#00ff88]"
+                            class="w-full pl-12 pr-12 py-3 rounded-lg bg-gray-100 dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 focus:border-[#00ff88]"
                             placeholder="0.00">
+                        <button id="copyEurBtn"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                            title="Copiar">
+                            <svg class="w-5 h-5 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
+                                </path>
+                            </svg>
+                        </button>
                     </div>
                 </div>
 
@@ -197,12 +227,70 @@
                     <div class="relative">
                         <span class="absolute left-3 top-3 text-gray-500">₮</span>
                         <input type="text" id="inputUsdt"
-                            class="w-full pl-12 pr-4 py-3 rounded-lg bg-gray-100 dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 focus:border-[#00ff88]"
+                            class="w-full pl-12 pr-12 py-3 rounded-lg bg-gray-100 dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 focus:border-[#00ff88]"
                             placeholder="0.00">
+                        <button id="copyUsdtBtn"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                            title="Copiar">
+                            <svg class="w-5 h-5 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
+                                </path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Separator Line -->
+                <div class="col-span-1 md:col-span-2 my-4 border-t border-gray-200 dark:border-gray-700"></div>
+
+                <!-- Brecha Cambiaria (Read-only with copy) -->
+                <div>
+                    <label for="gapDisplay" class="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
+                        Brecha Cambiaria % entre BCV y USDT
+                    </label>
+                    <div class="relative">
+                        <input type="text" id="gapDisplay" readonly
+                            class="w-full pr-12 pl-4 py-3 rounded-lg bg-gray-100 dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white font-semibold"
+                            value="--">
+                        <button id="copyGapBtn"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                            title="Copiar">
+                            <svg class="w-5 h-5 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
+                                </path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Promedio BCV-USDT (Read-only with copy) -->
+                <div>
+                    <label for="avgDisplay" class="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
+                        Promedio BCV-USDT
+                    </label>
+                    <div class="relative">
+                        <input type="text" id="avgDisplay" readonly
+                            class="w-full pr-12 pl-4 py-3 rounded-lg bg-gray-100 dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white font-semibold"
+                            value="--">
+                        <button id="copyAvgBtn"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                            title="Copiar">
+                            <svg class="w-5 h-5 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
+                                </path>
+                            </svg>
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
+
 
         <!-- Action Buttons -->
         <div class="flex flex-row justify-center gap-2 sm:gap-4 mb-8">
@@ -230,6 +318,88 @@
             </button>
         </div>
 
+        <!-- Calculadora Simple -->
+        <div
+            class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 mb-8 border border-gray-200 dark:border-gray-800">
+            <h2 class="text-xl font-semibold mb-6 text-center">Calculadora</h2>
+            <div class="max-w-xs mx-auto">
+                <!-- Display -->
+                <input type="text" id="calcDisplay" readonly
+                    class="w-full p-4 mb-4 text-right rounded-lg bg-gray-100 dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 font-mono text-2xl text-gray-900 dark:text-white"
+                    value="0">
+
+                <!-- Calculator Grid -->
+                <div class="grid grid-cols-4 gap-2">
+                    <!-- Row 1: C, empty, empty, ÷ -->
+                    <button
+                        class="calc-btn calc-clear p-4 rounded-lg bg-gray-400 dark:bg-gray-800 hover:bg-gray-500 dark:hover:bg-gray-700 font-bold text-lg text-red-500"
+                        data-value="C">AC</button>
+                    <button
+                        class="calc-btn calc-backspace p-4 rounded-lg bg-gray-400 dark:bg-gray-800 hover:bg-gray-500 dark:hover:bg-gray-700 font-bold text-lg text-gray-900 dark:text-white"
+                        data-value="⌫">⌫</button>
+                    <button
+                        class="calc-btn calc-percent p-4 rounded-lg bg-gray-400 dark:bg-gray-800 hover:bg-gray-500 dark:hover:bg-gray-700 font-bold text-lg text-gray-900 dark:text-white"
+                        data-value="%">%</button>
+                    <button
+                        class="calc-btn calc-op p-4 rounded-lg bg-gray-400 dark:bg-gray-800 hover:bg-gray-500 dark:hover:bg-gray-700 font-bold text-lg text-[#00ff88]"
+                        data-value="÷">÷</button>
+
+                    <!-- Row 2: 7, 8, 9, × -->
+                    <button
+                        class="calc-btn calc-num p-4 rounded-lg bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 font-semibold text-lg"
+                        data-value="7">7</button>
+                    <button
+                        class="calc-btn calc-num p-4 rounded-lg bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 font-semibold text-lg"
+                        data-value="8">8</button>
+                    <button
+                        class="calc-btn calc-num p-4 rounded-lg bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 font-semibold text-lg"
+                        data-value="9">9</button>
+                    <button
+                        class="calc-btn calc-op p-4 rounded-lg bg-gray-400 dark:bg-gray-800 hover:bg-gray-500 dark:hover:bg-gray-700 font-bold text-lg text-[#00ff88]"
+                        data-value="×">×</button>
+
+                    <!-- Row 3: 4, 5, 6, - -->
+                    <button
+                        class="calc-btn calc-num p-4 rounded-lg bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 font-semibold text-lg"
+                        data-value="4">4</button>
+                    <button
+                        class="calc-btn calc-num p-4 rounded-lg bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 font-semibold text-lg"
+                        data-value="5">5</button>
+                    <button
+                        class="calc-btn calc-num p-4 rounded-lg bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 font-semibold text-lg"
+                        data-value="6">6</button>
+                    <button
+                        class="calc-btn calc-op p-4 rounded-lg bg-gray-400 dark:bg-gray-800 hover:bg-gray-500 dark:hover:bg-gray-700 font-bold text-lg text-[#00ff88]"
+                        data-value="-">-</button>
+
+                    <!-- Row 4: 1, 2, 3, + -->
+                    <button
+                        class="calc-btn calc-num p-4 rounded-lg bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 font-semibold text-lg"
+                        data-value="1">1</button>
+                    <button
+                        class="calc-btn calc-num p-4 rounded-lg bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 font-semibold text-lg"
+                        data-value="2">2</button>
+                    <button
+                        class="calc-btn calc-num p-4 rounded-lg bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 font-semibold text-lg"
+                        data-value="3">3</button>
+                    <button
+                        class="calc-btn calc-op p-4 rounded-lg bg-gray-400 dark:bg-gray-800 hover:bg-gray-500 dark:hover:bg-gray-700 font-bold text-lg text-[#00ff88]"
+                        data-value="+">+</button>
+
+                    <!-- Row 5: 0 (col-span-2), ., = -->
+                    <button
+                        class="calc-btn calc-num col-span-2 p-4 rounded-lg bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 font-semibold text-lg"
+                        data-value="0">0</button>
+                    <button
+                        class="calc-btn calc-num p-4 rounded-lg bg-gray-300 dark:bg-gray-700 hover:bg-gray-400 dark:hover:bg-gray-600 font-semibold text-lg"
+                        data-value=".">.</button>
+                    <button
+                        class="calc-btn calc-equals p-4 rounded-lg bg-gray-400 dark:bg-gray-800 hover:bg-gray-500 dark:hover:bg-gray-700 font-bold text-lg text-[#ffd500]"
+                        data-value="=">=</button>
+                </div>
+            </div>
+        </div>
+
         <!-- Important Information Section (Accordion) -->
         <div
             class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-800 overflow-hidden">
@@ -247,35 +417,48 @@
                 <div class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed space-y-4 pb-6">
                     <p>
                         Los datos mostrados en esta aplicación tienen un carácter <strong>exclusivamente
-                            informativo</strong>. TasaVe no representa ni está afiliado a ninguna entidad gubernamental
-                        y no establece ninguna de las tasas aquí publicadas. La única tasa oficial en Venezuela es la
+                            informativo</strong>. TasaVe no representa ni está afiliado a ninguna entidad
+                        gubernamental
+                        y no establece ninguna de las tasas aquí publicadas. La única tasa oficial en Venezuela es
+                        la
                         publicada por el Banco Central de Venezuela (BCV), disponible en su sitio web (<a
                             href="https://www.bcv.org.ve/" target="_blank"
                             class="text-[#00ff88] hover:underline">https://www.bcv.org.ve/</a>).
                     </p>
                     <p>
-                        En la aplicación, la tasa oficial del BCV se actualiza a las 5:00 p.m. (hora de Venezuela) en
-                        los días hábiles en los que dicho organismo publica un nuevo valor. Esta tasa solo se refleja en
+                        En la aplicación, la tasa oficial del BCV se actualiza a las 5:00 p.m. (hora de Venezuela)
+                        en
+                        los días hábiles en los que dicho organismo publica un nuevo valor. Esta tasa solo se
+                        refleja en
                         la calculadora cuando entra en vigencia según lo indicado oficialmente por el BCV, es decir,
                         cuando corresponde a la fecha de valor establecida en la publicación.
                     </p>
                     <p>
-                        Se muestra asimismo una referencia del valor del USDT (Tether) frente al bolívar, calculada a
+                        Se muestra asimismo una referencia del valor del USDT (Tether) frente al bolívar, calculada
+                        a
                         partir de anuncios publicados en el mercado P2P de Binance. El USDT es una stablecoin creada
-                        para mantener cierta paridad con el dólar estadounidense, aunque no es dinero fiduciario ni debe
+                        para mantener cierta paridad con el dólar estadounidense, aunque no es dinero fiduciario ni
+                        debe
                         interpretarse como una tasa oficial. (1 USDT ≠ 1 USD).
                     </p>
                     <p>
-                        La Tasa USDT (P2P) se actualiza automáticamente cada hora y debe entenderse únicamente como una
-                        referencia estadística. En este tipo de mercado digital <strong>no existe un precio único, sino
-                            un rango de valores que dependen de las distintas ofertas de compra y venta publicadas de
+                        La Tasa USDT (P2P) se actualiza automáticamente cada hora y debe entenderse únicamente como
+                        una
+                        referencia estadística. En este tipo de mercado digital <strong>no existe un precio único,
+                            sino
+                            un rango de valores que dependen de las distintas ofertas de compra y venta publicadas
+                            de
                             manera simultánea</strong>. Por lo tanto, la cifra mostrada no equivale a un precio
-                        garantizado ni constituye una recomendación financiera. La aplicación no intermedia operaciones,
-                        no fija precios y no mantiene afiliación ni respaldo con Binance ni con ninguna otra plataforma.
+                        garantizado ni constituye una recomendación financiera. La aplicación no intermedia
+                        operaciones,
+                        no fija precios y no mantiene afiliación ni respaldo con Binance ni con ninguna otra
+                        plataforma.
                     </p>
                     <p>
-                        Es fundamental aclarar que este rango corresponde exclusivamente a las dinámicas de un mercado
-                        P2P internacional y no debe confundirse con las referencias que puedan mostrar otras plataformas
+                        Es fundamental aclarar que este rango corresponde exclusivamente a las dinámicas de un
+                        mercado
+                        P2P internacional y no debe confundirse con las referencias que puedan mostrar otras
+                        plataformas
                         nacionales, ya que se trata de mercados distintos.
                     </p>
                     <p>
@@ -386,12 +569,34 @@
                         })}`;
                 }
 
+                // Calculate and update Gap and Average
+                updateGapAndAverage(data.bcv_usd, data.usdt_avg);
+
             } catch (error) {
                 console.error('Error loading exchange rates:', error);
                 document.getElementById('labelUsd').textContent = '- Error';
                 document.getElementById('labelEur').textContent = '- Error';
                 document.getElementById('labelUsdt').textContent = '- Error';
                 document.getElementById('lastUpdate').textContent = 'Error de conexión';
+                document.getElementById('gapDisplay').value = '--';
+                document.getElementById('avgDisplay').value = '--';
+            }
+        }
+
+        // Update Gap and Average display
+        function updateGapAndAverage(bcvUsd, usdt) {
+            if (bcvUsd > 0 && usdt > 0) {
+                // Calculate gap percentage: ((USDT - BCV) / BCV) * 100
+                const gap = ((usdt - bcvUsd) / bcvUsd) * 100;
+                const gapStr = gap >= 0 ? `+${gap.toFixed(2)}%` : `${gap.toFixed(2)}%`;
+                document.getElementById('gapDisplay').value = gapStr;
+
+                // Calculate average
+                const avg = (bcvUsd + usdt) / 2;
+                document.getElementById('avgDisplay').value = formatVES(avg);
+            } else {
+                document.getElementById('gapDisplay').value = '--';
+                document.getElementById('avgDisplay').value = '--';
             }
         }
 
@@ -456,6 +661,194 @@
             inputEur.value = '';
             inputUsdt.value = '';
         });
+
+        // Copy buttons functionality
+        document.getElementById('copyGapBtn').addEventListener('click', async () => {
+            const text = document.getElementById('gapDisplay').value;
+            if (text !== '--') {
+                try {
+                    await navigator.clipboard.writeText(text);
+                    showCopySuccess('copyGapBtn');
+                } catch (err) {
+                    console.error('Error copiando:', err);
+                }
+            }
+        });
+
+        document.getElementById('copyAvgBtn').addEventListener('click', async () => {
+            const text = document.getElementById('avgDisplay').value;
+            if (text !== '--') {
+                try {
+                    // Remove "Bs. " prefix for cleaner copy
+                    const cleanText = text.replace('Bs. ', '');
+                    await navigator.clipboard.writeText(cleanText);
+                    showCopySuccess('copyAvgBtn');
+                } catch (err) {
+                    console.error('Error copiando:', err);
+                }
+            }
+        });
+
+        // Show copy success feedback
+        function showCopySuccess(buttonId) {
+            const button = document.getElementById(buttonId);
+            const originalHTML = button.innerHTML;
+            button.innerHTML = '<svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>';
+            setTimeout(() => {
+                button.innerHTML = originalHTML;
+            }, 1500);
+        }
+
+        // Copy buttons for converter inputs
+        document.getElementById('copyVesBtn').addEventListener('click', async () => {
+            const text = document.getElementById('inputVes').value;
+            if (text && text !== '') {
+                try {
+                    await navigator.clipboard.writeText(text);
+                    showCopySuccess('copyVesBtn');
+                } catch (err) {
+                    console.error('Error copiando:', err);
+                }
+            }
+        });
+
+        document.getElementById('copyUsdBtn').addEventListener('click', async () => {
+            const text = document.getElementById('inputUsd').value;
+            if (text && text !== '') {
+                try {
+                    await navigator.clipboard.writeText(text);
+                    showCopySuccess('copyUsdBtn');
+                } catch (err) {
+                    console.error('Error copiando:', err);
+                }
+            }
+        });
+
+        document.getElementById('copyEurBtn').addEventListener('click', async () => {
+            const text = document.getElementById('inputEur').value;
+            if (text && text !== '') {
+                try {
+                    await navigator.clipboard.writeText(text);
+                    showCopySuccess('copyEurBtn');
+                } catch (err) {
+                    console.error('Error copiando:', err);
+                }
+            }
+        });
+
+        document.getElementById('copyUsdtBtn').addEventListener('click', async () => {
+            const text = document.getElementById('inputUsdt').value;
+            if (text && text !== '') {
+                try {
+                    await navigator.clipboard.writeText(text);
+                    showCopySuccess('copyUsdtBtn');
+                } catch (err) {
+                    console.error('Error copiando:', err);
+                }
+            }
+        });
+
+        // Simple Calculator Logic
+        let calcCurrentValue = '0';
+        let calcPreviousValue = '';
+        let calcOperation = null;
+        let calcShouldResetDisplay = false;
+
+        const calcDisplay = document.getElementById('calcDisplay');
+        const calcButtons = document.querySelectorAll('.calc-btn');
+
+        calcButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const value = button.getAttribute('data-value');
+
+                if (button.classList.contains('calc-num')) {
+                    handleNumber(value);
+                } else if (button.classList.contains('calc-op')) {
+                    handleOperator(value);
+                } else if (button.classList.contains('calc-equals')) {
+                    handleEquals();
+                } else if (button.classList.contains('calc-clear')) {
+                    handleClear();
+                } else if (button.classList.contains('calc-backspace')) {
+                    handleBackspace();
+                } else if (button.classList.contains('calc-percent')) {
+                    handlePercent();
+                }
+            });
+        });
+
+        function handleBackspace() {
+            if (calcCurrentValue.length > 1) {
+                calcCurrentValue = calcCurrentValue.slice(0, -1);
+            } else {
+                calcCurrentValue = '0';
+            }
+            updateCalcDisplay();
+        }
+
+        function handlePercent() {
+            const currentNum = parseFloat(calcCurrentValue);
+            if (!isNaN(currentNum)) {
+                calcCurrentValue = String(currentNum / 100);
+                updateCalcDisplay();
+            }
+        }
+
+        function handleNumber(num) {
+            if (calcShouldResetDisplay) {
+                calcCurrentValue = num === '.' ? '0.' : num;
+                calcShouldResetDisplay = false;
+            } else {
+                if (num === '.' && calcCurrentValue.includes('.')) return;
+                calcCurrentValue = calcCurrentValue === '0' && num !== '.' ? num : calcCurrentValue + num;
+            }
+            updateCalcDisplay();
+        }
+
+        function handleOperator(op) {
+            if (calcOperation !== null) handleEquals();
+            calcPreviousValue = calcCurrentValue;
+            calcOperation = op;
+            calcShouldResetDisplay = true;
+        }
+
+        function handleEquals() {
+            if (calcOperation === null || calcShouldResetDisplay) return;
+
+            const prev = parseFloat(calcPreviousValue);
+            const current = parseFloat(calcCurrentValue);
+
+            switch (calcOperation) {
+                case '+':
+                    calcCurrentValue = String(prev + current);
+                    break;
+                case '-':
+                    calcCurrentValue = String(prev - current);
+                    break;
+                case '×':
+                    calcCurrentValue = String(prev * current);
+                    break;
+                case '÷':
+                    calcCurrentValue = current !== 0 ? String(prev / current) : 'Error';
+                    break;
+            }
+
+            calcOperation = null;
+            calcShouldResetDisplay = true;
+            updateCalcDisplay();
+        }
+
+        function handleClear() {
+            calcCurrentValue = '0';
+            calcPreviousValue = '';
+            calcOperation = null;
+            calcShouldResetDisplay = false;
+            updateCalcDisplay();
+        }
+
+        function updateCalcDisplay() {
+            calcDisplay.value = calcCurrentValue;
+        }
 
         // Initial load
         loadExchangeRates();
