@@ -173,7 +173,7 @@
                 <!-- USD Input -->
                 <div>
                     <label for="inputUsd" class="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
-                        Dólar BCV (USD) <span id="labelUsd" class="text-gray-400 dark:text-gray-500 font-normal">- Bs.
+                        Dólar BCV (USD) <span id="labelUsd" class="text-gray-400 dark:text-gray-500 font-normal">= Bs.
                             --</span>
                     </label>
                     <div class="relative">
@@ -197,7 +197,7 @@
                 <!-- EUR Input -->
                 <div>
                     <label for="inputEur" class="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
-                        Euro BCV (EUR) <span id="labelEur" class="text-gray-400 dark:text-gray-500 font-normal">- Bs.
+                        Euro BCV (EUR) <span id="labelEur" class="text-gray-400 dark:text-gray-500 font-normal">= Bs.
                             --</span>
                     </label>
                     <div class="relative">
@@ -221,7 +221,7 @@
                 <!-- USDT Input -->
                 <div>
                     <label for="inputUsdt" class="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
-                        USDT (Binance P2P) <span id="labelUsdt" class="text-gray-400 dark:text-gray-500 font-normal">-
+                        USDT (Binance P2P) <span id="labelUsdt" class="text-gray-400 dark:text-gray-500 font-normal">=
                             Bs. --</span>
                     </label>
                     <div class="relative">
@@ -555,9 +555,9 @@
                 exchangeRates = data;
 
                 // Update labels in calculator with rates (in gray)
-                document.getElementById('labelUsd').textContent = `- ${formatVES(data.bcv_usd)}`;
-                document.getElementById('labelEur').textContent = `- ${formatVES(data.bcv_eur)}`;
-                document.getElementById('labelUsdt').textContent = `- ${formatVES(data.usdt_avg)}`;
+                document.getElementById('labelUsd').textContent = `= ${formatVES(data.bcv_usd)}`;
+                document.getElementById('labelEur').textContent = `= ${formatVES(data.bcv_eur)}`;
+                document.getElementById('labelUsdt').textContent = `= ${formatVES(data.usdt_avg)}`;
 
                 // Update last update time
                 if (data.last_update) {
@@ -574,9 +574,9 @@
 
             } catch (error) {
                 console.error('Error loading exchange rates:', error);
-                document.getElementById('labelUsd').textContent = '- Error';
-                document.getElementById('labelEur').textContent = '- Error';
-                document.getElementById('labelUsdt').textContent = '- Error';
+                document.getElementById('labelUsd').textContent = '= Error';
+                document.getElementById('labelEur').textContent = '= Error';
+                document.getElementById('labelUsdt').textContent = '= Error';
                 document.getElementById('lastUpdate').textContent = 'Error de conexión';
                 document.getElementById('gapDisplay').value = '--';
                 document.getElementById('avgDisplay').value = '--';
@@ -643,11 +643,177 @@
             isUpdatingCalculator = false;
         }
 
+        // Storage for numeric values (in cents to avoid decimal issues)
+        let vesValue = 0;
+        let usdValue = 0;
+        let eurValue = 0;
+        let usdtValue = 0;
+
+        // Format number as Venezuelan currency (1.234,56)
+        function formatCurrencyVES(value) {
+            const num = value / 100; // Convert cents to main unit
+            return num.toLocaleString('de-DE', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        // Format number as decimal (1,234.56)
+        function formatCurrencyUSD(value) {
+            const num = value / 100;
+            return num.toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        // Handle numeric input (right-to-left like ATM)
+        function handleNumericInput(event, inputType) {
+            if (isUpdatingCalculator) return;
+
+            const input = event.target;
+            const key = event.data;
+
+            // Prevent default behavior
+            event.preventDefault();
+
+            // Only allow numbers
+            if (key && !/^\d$/.test(key)) {
+                return;
+            }
+
+            // Get current value for this input
+            let currentValue = 0;
+            switch (inputType) {
+                case 'ves': currentValue = vesValue; break;
+                case 'usd': currentValue = usdValue; break;
+                case 'eur': currentValue = eurValue; break;
+                case 'usdt': currentValue = usdtValue; break;
+            }
+
+            // Add digit to the right (shift left and add new digit)
+            if (key) {
+                currentValue = currentValue * 10 + parseInt(key);
+            }
+
+            // Update stored value
+            switch (inputType) {
+                case 'ves': vesValue = currentValue; break;
+                case 'usd': usdValue = currentValue; break;
+                case 'eur': eurValue = currentValue; break;
+                case 'usdt': usdtValue = currentValue; break;
+            }
+
+            // Update display
+            updateInputDisplay(inputType);
+
+            // Update other inputs based on conversion
+            updateCalculatorFromValue(inputType);
+        }
+
+        // Handle backspace/delete
+        function handleKeyDown(event, inputType) {
+            if (event.key === 'Backspace' || event.key === 'Delete') {
+                event.preventDefault();
+
+                let currentValue = 0;
+                switch (inputType) {
+                    case 'ves': currentValue = vesValue; break;
+                    case 'usd': currentValue = usdValue; break;
+                    case 'eur': currentValue = eurValue; break;
+                    case 'usdt': currentValue = usdtValue; break;
+                }
+
+                // Remove last digit (shift right)
+                currentValue = Math.floor(currentValue / 10);
+
+                switch (inputType) {
+                    case 'ves': vesValue = currentValue; break;
+                    case 'usd': usdValue = currentValue; break;
+                    case 'eur': eurValue = currentValue; break;
+                    case 'usdt': usdtValue = currentValue; break;
+                }
+
+                updateInputDisplay(inputType);
+                updateCalculatorFromValue(inputType);
+            }
+        }
+
+        // Update input display
+        function updateInputDisplay(inputType) {
+            switch (inputType) {
+                case 'ves':
+                    inputVes.value = formatCurrencyVES(vesValue);
+                    break;
+                case 'usd':
+                    inputUsd.value = formatCurrencyUSD(usdValue);
+                    break;
+                case 'eur':
+                    inputEur.value = formatCurrencyUSD(eurValue);
+                    break;
+                case 'usdt':
+                    inputUsdt.value = formatCurrencyUSD(usdtValue);
+                    break;
+            }
+        }
+
+        // Update calculator from value
+        function updateCalculatorFromValue(sourceInput) {
+            if (isUpdatingCalculator) return;
+            isUpdatingCalculator = true;
+
+            let vesAmount = 0;
+
+            // Calculate VES amount based on source
+            if (sourceInput === 'ves') {
+                vesAmount = vesValue / 100;
+            } else if (sourceInput === 'usd') {
+                vesAmount = (usdValue / 100) * exchangeRates.bcv_usd;
+            } else if (sourceInput === 'eur') {
+                vesAmount = (eurValue / 100) * exchangeRates.bcv_eur;
+            } else if (sourceInput === 'usdt') {
+                vesAmount = (usdtValue / 100) * exchangeRates.usdt_avg;
+            }
+
+            // Update all other fields
+            if (sourceInput !== 'ves') {
+                vesValue = Math.round(vesAmount * 100);
+                inputVes.value = formatCurrencyVES(vesValue);
+            }
+            if (sourceInput !== 'usd' && exchangeRates.bcv_usd > 0) {
+                usdValue = Math.round((vesAmount / exchangeRates.bcv_usd) * 100);
+                inputUsd.value = formatCurrencyUSD(usdValue);
+            }
+            if (sourceInput !== 'eur' && exchangeRates.bcv_eur > 0) {
+                eurValue = Math.round((vesAmount / exchangeRates.bcv_eur) * 100);
+                inputEur.value = formatCurrencyUSD(eurValue);
+            }
+            if (sourceInput !== 'usdt' && exchangeRates.usdt_avg > 0) {
+                usdtValue = Math.round((vesAmount / exchangeRates.usdt_avg) * 100);
+                inputUsdt.value = formatCurrencyUSD(usdtValue);
+            }
+
+            isUpdatingCalculator = false;
+        }
+
+        // Set initial values
+        inputVes.value = '0,00';
+        inputUsd.value = '0.00';
+        inputEur.value = '0.00';
+        inputUsdt.value = '0.00';
+
         // Add event listeners for calculator inputs
-        inputVes.addEventListener('input', () => updateCalculator('ves'));
-        inputUsd.addEventListener('input', () => updateCalculator('usd'));
-        inputEur.addEventListener('input', () => updateCalculator('eur'));
-        inputUsdt.addEventListener('input', () => updateCalculator('usdt'));
+        inputVes.addEventListener('beforeinput', (e) => handleNumericInput(e, 'ves'));
+        inputVes.addEventListener('keydown', (e) => handleKeyDown(e, 'ves'));
+
+        inputUsd.addEventListener('beforeinput', (e) => handleNumericInput(e, 'usd'));
+        inputUsd.addEventListener('keydown', (e) => handleKeyDown(e, 'usd'));
+
+        inputEur.addEventListener('beforeinput', (e) => handleNumericInput(e, 'eur'));
+        inputEur.addEventListener('keydown', (e) => handleKeyDown(e, 'eur'));
+
+        inputUsdt.addEventListener('beforeinput', (e) => handleNumericInput(e, 'usdt'));
+        inputUsdt.addEventListener('keydown', (e) => handleKeyDown(e, 'usdt'));
 
         // Refresh button
         document.getElementById('refreshBtn').addEventListener('click', () => {
@@ -656,10 +822,14 @@
 
         // Clear button
         document.getElementById('clearBtn').addEventListener('click', () => {
-            inputVes.value = '';
-            inputUsd.value = '';
-            inputEur.value = '';
-            inputUsdt.value = '';
+            vesValue = 0;
+            usdValue = 0;
+            eurValue = 0;
+            usdtValue = 0;
+            inputVes.value = '0,00';
+            inputUsd.value = '0.00';
+            inputEur.value = '0.00';
+            inputUsdt.value = '0.00';
         });
 
         // Copy buttons functionality
@@ -789,7 +959,9 @@
         function handlePercent() {
             const currentNum = parseFloat(calcCurrentValue);
             if (!isNaN(currentNum)) {
-                calcCurrentValue = String(currentNum / 100);
+                const result = currentNum / 100;
+                // Round to 2 decimal places
+                calcCurrentValue = String(Math.round(result * 100) / 100);
                 updateCalcDisplay();
             }
         }
@@ -817,20 +989,29 @@
 
             const prev = parseFloat(calcPreviousValue);
             const current = parseFloat(calcCurrentValue);
+            let result;
 
             switch (calcOperation) {
                 case '+':
-                    calcCurrentValue = String(prev + current);
+                    result = prev + current;
                     break;
                 case '-':
-                    calcCurrentValue = String(prev - current);
+                    result = prev - current;
                     break;
                 case '×':
-                    calcCurrentValue = String(prev * current);
+                    result = prev * current;
                     break;
                 case '÷':
-                    calcCurrentValue = current !== 0 ? String(prev / current) : 'Error';
+                    result = current !== 0 ? prev / current : NaN;
                     break;
+            }
+
+            // Round to 2 decimal places
+            if (!isNaN(result)) {
+                result = Math.round(result * 100) / 100;
+                calcCurrentValue = String(result);
+            } else {
+                calcCurrentValue = 'Error';
             }
 
             calcOperation = null;
