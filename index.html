@@ -354,6 +354,37 @@
 
         <!-- Calculadora Eliminada -->
 
+        <!-- Historial de Precios -->
+        <div id="history-section"
+            class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 mb-8 border border-gray-200 dark:border-gray-800">
+            <h2 class="text-xl font-semibold mb-1 flex items-center gap-2">
+                <span>📅</span> Historial de Precios
+            </h2>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mb-5">Consulta el precio del dólar, euro y USDT en una fecha pasada.</p>
+
+            <!-- Date Picker Row -->
+            <div class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-end">
+                <div class="flex-1">
+                    <label for="historyDateInput" class="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">Selecciona una fecha</label>
+                    <input type="date" id="historyDateInput"
+                        class="w-full px-4 py-3 rounded-lg bg-gray-100 dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 focus:border-[#00ff88] text-gray-900 dark:text-white"
+                        style="color-scheme: dark;">
+                </div>
+                <button id="historySearchBtn"
+                    class="px-6 py-3 bg-gradient-to-r from-[#00ff88] to-[#00cc6a] text-gray-900 font-semibold rounded-lg hover:shadow-lg transform hover:scale-105 transition-all duration-200 flex items-center justify-center gap-2 whitespace-nowrap">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0"></path>
+                    </svg>
+                    Buscar
+                </button>
+            </div>
+
+            <!-- Results -->
+            <div id="historyResult" class="mt-5 hidden">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+
         <!-- Important Information Section (Accordion) -->
         <div
             class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-800 overflow-hidden">
@@ -637,18 +668,48 @@
             });
         }
 
+        // Shared delete-digit helper
+        function deleteLastDigit(inputType) {
+            let currentValue = 0;
+            switch (inputType) {
+                case 'ves': currentValue = vesValue; break;
+                case 'usd': currentValue = usdValue; break;
+                case 'eur': currentValue = eurValue; break;
+                case 'usdt': currentValue = usdtValue; break;
+                case 'custom': currentValue = customValue; break;
+            }
+            currentValue = Math.floor(currentValue / 10);
+            switch (inputType) {
+                case 'ves': vesValue = currentValue; break;
+                case 'usd': usdValue = currentValue; break;
+                case 'eur': eurValue = currentValue; break;
+                case 'usdt': usdtValue = currentValue; break;
+                case 'custom': customValue = currentValue; break;
+            }
+            updateInputDisplay(inputType);
+            updateCalculatorFromValue(inputType);
+        }
+
         // Handle numeric input (right-to-left like ATM)
         function handleNumericInput(event, inputType) {
             if (isUpdatingCalculator) return;
 
-            const input = event.target;
+            const evType = event.inputType;
+
+            // Handle mobile backspace (Android virtual keyboard)
+            if (evType === 'deleteContentBackward' || evType === 'deleteContentForward') {
+                event.preventDefault();
+                deleteLastDigit(inputType);
+                return;
+            }
+
             const key = event.data;
 
             // Prevent default behavior
             event.preventDefault();
 
-            // Only allow numbers
-            if (key && !/^\d$/.test(key)) {
+            // Only allow digits
+            if (!key || !/^\d$/.test(key)) {
                 return;
             }
 
@@ -663,9 +724,7 @@
             }
 
             // Add digit to the right (shift left and add new digit)
-            if (key) {
-                currentValue = currentValue * 10 + parseInt(key);
-            }
+            currentValue = currentValue * 10 + parseInt(key);
 
             // Update stored value
             switch (inputType) {
@@ -683,33 +742,11 @@
             updateCalculatorFromValue(inputType);
         }
 
-        // Handle backspace/delete
+        // Handle backspace/delete (desktop keyboards)
         function handleKeyDown(event, inputType) {
             if (event.key === 'Backspace' || event.key === 'Delete') {
                 event.preventDefault();
-
-                let currentValue = 0;
-                switch (inputType) {
-                    case 'ves': currentValue = vesValue; break;
-                    case 'usd': currentValue = usdValue; break;
-                    case 'eur': currentValue = eurValue; break;
-                    case 'usdt': currentValue = usdtValue; break;
-                    case 'custom': currentValue = customValue; break;
-                }
-
-                // Remove last digit (shift right)
-                currentValue = Math.floor(currentValue / 10);
-
-                switch (inputType) {
-                    case 'ves': vesValue = currentValue; break;
-                    case 'usd': usdValue = currentValue; break;
-                    case 'eur': eurValue = currentValue; break;
-                    case 'usdt': usdtValue = currentValue; break;
-                    case 'custom': customValue = currentValue; break;
-                }
-
-                updateInputDisplay(inputType);
-                updateCalculatorFromValue(inputType);
+                deleteLastDigit(inputType);
             }
         }
 
@@ -1028,8 +1065,102 @@
             calcDisplay.value = calcCurrentValue;
         }
 
-        // Initial load
+        // ── Historial de Precios ──────────────────────────────────────────────
+
+        let historyData = [];
+
+        // Set today's date as default
+        (function setDefaultDate() {
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            document.getElementById('historyDateInput').value = `${yyyy}-${mm}-${dd}`;
+        })();
+
+        async function loadHistory() {
+            try {
+                const res = await fetch('./history.json?nocache=' + Date.now());
+                if (!res.ok) throw new Error();
+                const json = await res.json();
+                historyData = json.history || [];
+            } catch {
+                historyData = [];
+            }
+        }
+
+        function searchHistory() {
+            const dateVal = document.getElementById('historyDateInput').value;
+            const resultEl = document.getElementById('historyResult');
+
+            if (!dateVal) {
+                resultEl.innerHTML = `<p class="text-sm text-yellow-500">Por favor selecciona una fecha.</p>`;
+                resultEl.classList.remove('hidden');
+                return;
+            }
+
+            const entry = historyData.find(e => e.date === dateVal);
+            resultEl.classList.remove('hidden');
+
+            if (!entry) {
+                resultEl.innerHTML = `
+                    <div class="flex items-center gap-3 p-4 rounded-xl bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                        <span class="text-2xl">🔍</span>
+                        <div>
+                            <p class="font-semibold text-gray-700 dark:text-gray-300">Sin datos para esta fecha</p>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">El historial registra datos desde el inicio del scraper. Prueba otra fecha.</p>
+                        </div>
+                    </div>`;
+                return;
+            }
+
+            const dateLabel = new Date(entry.date + 'T12:00:00').toLocaleDateString('es-VE', {
+                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+            });
+
+            resultEl.innerHTML = `
+                <div class="mb-3 flex items-center gap-2">
+                    <span class="inline-block w-2 h-2 rounded-full bg-[#00ff88]"></span>
+                    <span class="text-sm font-medium text-gray-600 dark:text-gray-300 capitalize">${dateLabel}</span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div class="rounded-xl p-4 bg-gradient-to-br from-green-500/10 to-green-600/5 border border-green-500/20">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="text-lg">🇺🇸</span>
+                            <span class="text-xs font-semibold text-green-400 uppercase tracking-wide">Dólar BCV</span>
+                        </div>
+                        <p class="text-xl font-bold text-gray-900 dark:text-white">${formatVES(entry.bcv_usd)}</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">por 1 USD</p>
+                    </div>
+                    <div class="rounded-xl p-4 bg-gradient-to-br from-blue-500/10 to-blue-600/5 border border-blue-500/20">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="text-lg">🇪🇺</span>
+                            <span class="text-xs font-semibold text-blue-400 uppercase tracking-wide">Euro BCV</span>
+                        </div>
+                        <p class="text-xl font-bold text-gray-900 dark:text-white">${formatVES(entry.bcv_eur)}</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">por 1 EUR</p>
+                    </div>
+                    <div class="rounded-xl p-4 bg-gradient-to-br from-yellow-500/10 to-yellow-600/5 border border-yellow-500/20">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="text-lg">₮</span>
+                            <span class="text-xs font-semibold text-yellow-400 uppercase tracking-wide">USDT P2P</span>
+                        </div>
+                        <p class="text-xl font-bold text-gray-900 dark:text-white">${formatVES(entry.usdt_avg)}</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">por 1 USDT</p>
+                    </div>
+                </div>`;
+        }
+
+        document.getElementById('historySearchBtn').addEventListener('click', searchHistory);
+
+        // Also trigger on Enter key in date input
+        document.getElementById('historyDateInput').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') searchHistory();
+        });
+
+        // ── Initial load ─────────────────────────────────────────────────────
         loadExchangeRates();
+        loadHistory();
     </script>
 </body>
 

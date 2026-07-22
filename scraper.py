@@ -7,8 +7,9 @@ Generates data.json for the webapp
 """
 
 import json
+import os
 import requests
-from datetime import datetime
+from datetime import datetime, date
 import time
 import sys
 import io
@@ -187,6 +188,61 @@ def generate_data_json():
     except Exception as e:
         print(f"✗ Error writing data.json: {e}")
         raise
+
+    # Update historical record
+    update_history_json(data)
+
+
+def update_history_json(data):
+    """
+    Appends today's rates to history.json (one entry per calendar day).
+    Only records an entry when both BCV and USDT rates are available.
+    """
+    # Skip if rates are incomplete
+    if not data.get('bcv_usd') or not data.get('usdt_avg'):
+        print("⚠ Skipping history update: incomplete rates")
+        return
+
+    history_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'history.json')
+    today_str = date.today().isoformat()  # e.g. "2026-07-21"
+
+    # Load existing history
+    history = []
+    if os.path.exists(history_path):
+        try:
+            with open(history_path, 'r', encoding='utf-8') as f:
+                existing = json.load(f)
+                history = existing.get('history', [])
+        except Exception as e:
+            print(f"⚠ Could not read history.json, starting fresh: {e}")
+
+    # Check if today's entry already exists
+    today_entry = next((e for e in history if e.get('date') == today_str), None)
+
+    new_entry = {
+        'date': today_str,
+        'bcv_usd': round(data['bcv_usd'], 6),
+        'bcv_eur': round(data.get('bcv_eur', 0), 6),
+        'usdt_avg': round(data['usdt_avg'], 2)
+    }
+
+    if today_entry:
+        # Update in-place (latest scrape wins)
+        idx = history.index(today_entry)
+        history[idx] = new_entry
+        print(f"✓ History entry updated for {today_str}")
+    else:
+        history.append(new_entry)
+        print(f"✓ History entry added for {today_str} (total: {len(history)} days)")
+
+    # Sort ascending by date
+    history.sort(key=lambda e: e['date'])
+
+    try:
+        with open(history_path, 'w', encoding='utf-8') as f:
+            json.dump({'history': history}, f, ensure_ascii=False, indent=2)
+    except Exception as e:
+        print(f"✗ Error writing history.json: {e}")
 
 
 if __name__ == "__main__":
