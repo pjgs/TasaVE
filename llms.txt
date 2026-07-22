@@ -1,0 +1,16 @@
+# TasaVe - Precio del Dólar y Euro en Venezuela hoy
+
+> TasaVe es una plataforma que muestra las tasas de cambio del Banco Central de Venezuela (BCV) y la cotización de USDT en Binance P2P actualizadas en tiempo real.
+
+## Información General
+- **Tasa Oficial BCV**: Cotización oficial del USD y EUR según el Banco Central de Venezuela.
+- **Tasa USDT (Binance P2P)**: Promedio de compra y venta del mercado P2P en Venezuela.
+- **Calculadora**: Herramienta de conversión bidireccional entre Bolívares (VES), USD, EUR y USDT.
+- **Histórico**: Registro histórico diario de la evolución del tipo de cambio.
+
+## Datos para Desarrolladores y Bots (JSON)
+- [data.json](https://pjgs.github.io/TasaVE/data.json): Contiene las tasas de cambio actuales en formato JSON.
+- [history.json](https://pjgs.github.io/TasaVE/history.json): Contiene el histórico de tasas por fecha en formato JSON.
+
+## Enlaces
+- [TasaVe Web Page](https://pjgs.github.io/TasaVE/)

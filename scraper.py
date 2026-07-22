@@ -191,6 +191,33 @@ def generate_data_json():
 
     # Update historical record
     update_history_json(data)
+    
+    # Update sitemap lastmod date
+    update_sitemap_xml()
+
+
+def update_sitemap_xml():
+    """
+    Updates the <lastmod> date in sitemap.xml to today's date.
+    """
+    sitemap_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'sitemap.xml')
+    if not os.path.exists(sitemap_path):
+        return
+
+    today_str = date.today().isoformat()
+    try:
+        with open(sitemap_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        import re
+        new_content = re.sub(r'<lastmod>.*?</lastmod>', f'<lastmod>{today_str}</lastmod>', content)
+        
+        with open(sitemap_path, 'w', encoding='utf-8') as f:
+            f.write(new_content)
+        print(f"✓ sitemap.xml updated with lastmod {today_str}")
+    except Exception as e:
+        print(f"⚠ Could not update sitemap.xml: {e}")
+
 
 
 def update_history_json(data):
