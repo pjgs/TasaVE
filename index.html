@@ -40,16 +40,6 @@
     <meta name="geo.placename" content="Venezuela">
     <link rel="canonical" href="https://pjgs.github.io/TasaVE/">
 
-    <!-- Google Tag Manager -->
-    <script>(function (w, d, s, l, i) {
-            w[l] = w[l] || []; w[l].push({
-                'gtm.start':
-                    new Date().getTime(), event: 'gtm.js'
-            }); var f = d.getElementsByTagName(s)[0],
-                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
-                    'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
-        })(window, document, 'script', 'dataLayer', 'GTM-TJH8652K');</script>
-    <!-- End Google Tag Manager -->
 
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-6ZEHN1J50W"></script>
@@ -119,10 +109,7 @@
 </head>
 
 <body class="min-h-screen bg-gray-50 dark:bg-[#0a0a0a] text-gray-900 dark:text-white transition-colors duration-300">
-    <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TJH8652K" height="0" width="0"
-            style="display:none;visibility:hidden"></iframe></noscript>
-    <!-- End Google Tag Manager (noscript) -->
+
     <div class="container mx-auto px-4 py-8 max-w-4xl">
         <!-- Header -->
         <header class="flex justify-between items-center mb-8">
@@ -366,27 +353,29 @@
 
         <!-- Historial de Precios -->
         <div id="history-section"
-            class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 mb-8 border border-gray-200 dark:border-gray-800">
-            <h2 class="text-xl font-semibold mb-1 flex items-center gap-2">
+            class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg px-4 py-5 sm:p-6 mb-8 border border-gray-200 dark:border-gray-800">
+            <h2 class="text-xl font-semibold mb-1 flex items-center justify-center gap-2">
                 <span>📅</span> Historial de Precios
             </h2>
-            <p class="text-xs text-gray-500 dark:text-gray-400 mb-5">Consulta el precio del dólar, euro y USDT en una fecha pasada.</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mb-4 text-center">Consulta el precio del dólar, euro y USDT en una fecha pasada.</p>
 
             <!-- Date Picker Row -->
-            <div class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-end">
-                <div class="flex-1">
+            <div class="flex justify-center">
+                <div class="inline-flex flex-col sm:flex-row gap-3 items-center">
+                <div>
                     <label for="historyDateInput" class="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">Selecciona una fecha</label>
                     <input type="date" id="historyDateInput"
-                        class="w-full px-4 py-3 rounded-lg bg-gray-100 dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 focus:border-[#00ff88] text-gray-900 dark:text-white"
+                        class="px-4 py-2 sm:py-3 rounded-lg bg-gray-100 dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-700 focus:border-[#00ff88] text-gray-900 dark:text-white"
                         style="color-scheme: dark;">
                 </div>
                 <button id="historySearchBtn"
-                    class="px-3 py-2 sm:px-6 sm:py-3 bg-gradient-to-r from-[#00ff88] to-[#00cc6a] text-gray-900 font-semibold rounded-lg hover:shadow-lg transform hover:scale-105 transition-all duration-200 flex items-center justify-center gap-1 sm:gap-2 whitespace-nowrap text-xs sm:text-base">
+                    class="sm:mt-5 px-3 py-2 sm:px-6 sm:py-3 bg-gradient-to-r from-[#00ff88] to-[#00cc6a] text-gray-900 font-semibold rounded-lg hover:shadow-lg transform hover:scale-105 transition-all duration-200 flex items-center justify-center gap-1 sm:gap-2 whitespace-nowrap text-xs sm:text-base">
                     <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0"></path>
                     </svg>
                     Buscar
                 </button>
+                </div>
             </div>
 
             <!-- Results -->
