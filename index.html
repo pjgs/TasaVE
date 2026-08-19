@@ -760,8 +760,98 @@
         inputUsdt.value = '0.00';
         inputCustom.value = '0.00';
 
-        // Add event listeners for calculator inputs (free text editing)
-        const inputs = [
+        // Track which inputs have all text selected (ready to overwrite)
+        const inputOverwriteMode = {};
+
+        // Shared delete-digit helper (ATM style)
+        function deleteLastDigit(inputType) {
+            let currentValue = getStoredValue(inputType);
+            currentValue = Math.floor(currentValue / 10);
+            setStoredValue(inputType, currentValue);
+            updateInputDisplay(inputType);
+            updateCalculatorFromValue(inputType);
+        }
+
+        function getStoredValue(inputType) {
+            switch (inputType) {
+                case 'ves': return vesValue;
+                case 'usd': return usdValue;
+                case 'eur': return eurValue;
+                case 'usdt': return usdtValue;
+                case 'custom': return customValue;
+            }
+            return 0;
+        }
+
+        function setStoredValue(inputType, val) {
+            switch (inputType) {
+                case 'ves': vesValue = val; break;
+                case 'usd': usdValue = val; break;
+                case 'eur': eurValue = val; break;
+                case 'usdt': usdtValue = val; break;
+                case 'custom': customValue = val; break;
+            }
+        }
+
+        // ATM-style input handler with select-all overwrite support
+        function handleNumericInput(event, inputType) {
+            if (isUpdatingCalculator) return;
+
+            const evType = event.inputType;
+
+            // Handle backspace on mobile
+            if (evType === 'deleteContentBackward' || evType === 'deleteContentForward') {
+                event.preventDefault();
+                deleteLastDigit(inputType);
+                return;
+            }
+
+            const key = event.data;
+            event.preventDefault();
+
+            if (!key || !/^\d$/.test(key)) return;
+
+            // If overwrite mode (user selected all), reset to 0 first
+            if (inputOverwriteMode[inputType]) {
+                setStoredValue(inputType, 0);
+                inputOverwriteMode[inputType] = false;
+            }
+
+            let currentValue = getStoredValue(inputType);
+            currentValue = currentValue * 10 + parseInt(key);
+            setStoredValue(inputType, currentValue);
+
+            updateInputDisplay(inputType);
+            updateCalculatorFromValue(inputType);
+        }
+
+        // Desktop Backspace/Delete key handler
+        function handleKeyDown(event, inputType) {
+            if (event.key === 'Backspace' || event.key === 'Delete') {
+                event.preventDefault();
+                deleteLastDigit(inputType);
+            }
+        }
+
+        // Detect select-all (Ctrl+A or mouse drag selecting everything)
+        function handleSelect(event, inputType, el) {
+            const val = el.value;
+            if (el.selectionStart === 0 && el.selectionEnd === val.length && val.length > 0) {
+                inputOverwriteMode[inputType] = true;
+            } else {
+                inputOverwriteMode[inputType] = false;
+            }
+        }
+
+        // Set initial values
+        inputVes.value = '0,00';
+        inputUsd.value = '0.00';
+        inputEur.value = '0.00';
+        inputUsdt.value = '0.00';
+        inputCustom.value = '0.00';
+
+        // Wire up all inputs with ATM mode + select-all overwrite
+        const calcInputs = [
             { el: inputVes, type: 'ves' },
             { el: inputUsd, type: 'usd' },
             { el: inputEur, type: 'eur' },
@@ -769,38 +859,19 @@
             { el: inputCustom, type: 'custom' }
         ];
 
-        inputs.forEach(({ el, type }) => {
-            el.addEventListener('input', () => {
-                if (isUpdatingCalculator) return;
-                
-                let num = 0;
-                if (type === 'ves') {
-                    // Parse Venezuelan format: remove dots, change comma to dot
-                    const raw = el.value.replace(/\./g, '').replace(',', '.').replace(/[^0-9.-]/g, '');
-                    num = parseFloat(raw) || 0;
-                } else {
-                    // Parse standard decimal format: remove commas
-                    const raw = el.value.replace(/,/g, '').replace(/[^0-9.-]/g, '');
-                    num = parseFloat(raw) || 0;
-                }
-                
-                const centValue = Math.round(num * 100);
-                switch (type) {
-                    case 'ves': vesValue = centValue; break;
-                    case 'usd': usdValue = centValue; break;
-                    case 'eur': eurValue = centValue; break;
-                    case 'usdt': usdtValue = centValue; break;
-                    case 'custom': customValue = centValue; break;
-                }
-                
-                updateCalculatorFromValue(type);
+        calcInputs.forEach(({ el, type }) => {
+            el.addEventListener('beforeinput', (e) => handleNumericInput(e, type));
+            el.addEventListener('keydown', (e) => handleKeyDown(e, type));
+            el.addEventListener('select', (e) => handleSelect(e, type, el));
+            el.addEventListener('click', () => {
+                // Reset overwrite mode when simply clicking (not selecting)
+                inputOverwriteMode[type] = false;
             });
-
             el.addEventListener('blur', () => {
-                // Reformat nicely on focus loss
-                updateInputDisplay(type);
+                inputOverwriteMode[type] = false;
             });
         });
+
 
         // Listen to rate change
         inputCustomRateVal.addEventListener('change', () => {
