@@ -794,7 +794,7 @@
         }
 
         // ATM-style input handler with select-all overwrite support
-        function handleNumericInput(event, inputType) {
+        function handleNumericInput(event, inputType, el) {
             if (isUpdatingCalculator) return;
 
             const evType = event.inputType;
@@ -811,8 +811,9 @@
 
             if (!key || !/^\d$/.test(key)) return;
 
-            // If overwrite mode (user selected all), reset to 0 first
-            if (inputOverwriteMode[inputType]) {
+            // Overwrite if: flag is set OR the entire field text is currently selected (mobile)
+            const isAllSelected = el && el.selectionStart === 0 && el.selectionEnd === el.value.length && el.value.length > 0;
+            if (inputOverwriteMode[inputType] || isAllSelected) {
                 setStoredValue(inputType, 0);
                 inputOverwriteMode[inputType] = false;
             }
@@ -860,17 +861,33 @@
         ];
 
         calcInputs.forEach(({ el, type }) => {
-            el.addEventListener('beforeinput', (e) => handleNumericInput(e, type));
+            el.addEventListener('beforeinput', (e) => handleNumericInput(e, type, el));
             el.addEventListener('keydown', (e) => handleKeyDown(e, type));
-            el.addEventListener('select', (e) => handleSelect(e, type, el));
-            el.addEventListener('click', () => {
-                // Reset overwrite mode when simply clicking (not selecting)
-                inputOverwriteMode[type] = false;
+
+            // Auto-select all text on focus (shows blue highlight on tap/click)
+            el.addEventListener('focus', () => {
+                setTimeout(() => {
+                    el.select();
+                    inputOverwriteMode[type] = true;
+                }, 0);
             });
+
+            // If user clicks to reposition cursor (no selection), disable overwrite
+            el.addEventListener('mouseup', () => {
+                setTimeout(() => {
+                    if (el.selectionStart === el.selectionEnd) {
+                        inputOverwriteMode[type] = false;
+                    } else {
+                        inputOverwriteMode[type] = true;
+                    }
+                }, 0);
+            });
+
             el.addEventListener('blur', () => {
                 inputOverwriteMode[type] = false;
             });
         });
+
 
 
         // Listen to rate change
