@@ -685,87 +685,7 @@
             });
         }
 
-        // Shared delete-digit helper
-        function deleteLastDigit(inputType) {
-            let currentValue = 0;
-            switch (inputType) {
-                case 'ves': currentValue = vesValue; break;
-                case 'usd': currentValue = usdValue; break;
-                case 'eur': currentValue = eurValue; break;
-                case 'usdt': currentValue = usdtValue; break;
-                case 'custom': currentValue = customValue; break;
-            }
-            currentValue = Math.floor(currentValue / 10);
-            switch (inputType) {
-                case 'ves': vesValue = currentValue; break;
-                case 'usd': usdValue = currentValue; break;
-                case 'eur': eurValue = currentValue; break;
-                case 'usdt': usdtValue = currentValue; break;
-                case 'custom': customValue = currentValue; break;
-            }
-            updateInputDisplay(inputType);
-            updateCalculatorFromValue(inputType);
-        }
 
-        // Handle numeric input (right-to-left like ATM)
-        function handleNumericInput(event, inputType) {
-            if (isUpdatingCalculator) return;
-
-            const evType = event.inputType;
-
-            // Handle mobile backspace (Android virtual keyboard)
-            if (evType === 'deleteContentBackward' || evType === 'deleteContentForward') {
-                event.preventDefault();
-                deleteLastDigit(inputType);
-                return;
-            }
-
-            const key = event.data;
-
-            // Prevent default behavior
-            event.preventDefault();
-
-            // Only allow digits
-            if (!key || !/^\d$/.test(key)) {
-                return;
-            }
-
-            // Get current value for this input
-            let currentValue = 0;
-            switch (inputType) {
-                case 'ves': currentValue = vesValue; break;
-                case 'usd': currentValue = usdValue; break;
-                case 'eur': currentValue = eurValue; break;
-                case 'usdt': currentValue = usdtValue; break;
-                case 'custom': currentValue = customValue; break;
-            }
-
-            // Add digit to the right (shift left and add new digit)
-            currentValue = currentValue * 10 + parseInt(key);
-
-            // Update stored value
-            switch (inputType) {
-                case 'ves': vesValue = currentValue; break;
-                case 'usd': usdValue = currentValue; break;
-                case 'eur': eurValue = currentValue; break;
-                case 'usdt': usdtValue = currentValue; break;
-                case 'custom': customValue = currentValue; break;
-            }
-
-            // Update display
-            updateInputDisplay(inputType);
-
-            // Update other inputs based on conversion
-            updateCalculatorFromValue(inputType);
-        }
-
-        // Handle backspace/delete (desktop keyboards)
-        function handleKeyDown(event, inputType) {
-            if (event.key === 'Backspace' || event.key === 'Delete') {
-                event.preventDefault();
-                deleteLastDigit(inputType);
-            }
-        }
 
         // Update input display
         function updateInputDisplay(inputType) {
@@ -840,32 +760,46 @@
         inputUsdt.value = '0.00';
         inputCustom.value = '0.00';
 
-        // Add event listeners for calculator inputs
-        inputVes.addEventListener('beforeinput', (e) => handleNumericInput(e, 'ves'));
-        inputVes.addEventListener('keydown', (e) => handleKeyDown(e, 'ves'));
+        // Add event listeners for calculator inputs (free text editing)
+        const inputs = [
+            { el: inputVes, type: 'ves' },
+            { el: inputUsd, type: 'usd' },
+            { el: inputEur, type: 'eur' },
+            { el: inputUsdt, type: 'usdt' },
+            { el: inputCustom, type: 'custom' }
+        ];
 
-        inputUsd.addEventListener('beforeinput', (e) => handleNumericInput(e, 'usd'));
-        inputUsd.addEventListener('keydown', (e) => handleKeyDown(e, 'usd'));
+        inputs.forEach(({ el, type }) => {
+            el.addEventListener('input', () => {
+                if (isUpdatingCalculator) return;
+                
+                let num = 0;
+                if (type === 'ves') {
+                    // Parse Venezuelan format: remove dots, change comma to dot
+                    const raw = el.value.replace(/\./g, '').replace(',', '.').replace(/[^0-9.-]/g, '');
+                    num = parseFloat(raw) || 0;
+                } else {
+                    // Parse standard decimal format: remove commas
+                    const raw = el.value.replace(/,/g, '').replace(/[^0-9.-]/g, '');
+                    num = parseFloat(raw) || 0;
+                }
+                
+                const centValue = Math.round(num * 100);
+                switch (type) {
+                    case 'ves': vesValue = centValue; break;
+                    case 'usd': usdValue = centValue; break;
+                    case 'eur': eurValue = centValue; break;
+                    case 'usdt': usdtValue = centValue; break;
+                    case 'custom': customValue = centValue; break;
+                }
+                
+                updateCalculatorFromValue(type);
+            });
 
-        inputEur.addEventListener('beforeinput', (e) => handleNumericInput(e, 'eur'));
-        inputEur.addEventListener('keydown', (e) => handleKeyDown(e, 'eur'));
-
-        inputUsdt.addEventListener('beforeinput', (e) => handleNumericInput(e, 'usdt'));
-        inputUsdt.addEventListener('keydown', (e) => handleKeyDown(e, 'usdt'));
-
-        // inputCustom uses free text editing (cursor positioning allowed)
-        inputCustom.addEventListener('input', () => {
-            if (isUpdatingCalculator) return;
-            // Parse what the user typed (accept dot or comma as decimal)
-            const raw = inputCustom.value.replace(/,/g, '').replace(/[^0-9.]/g, '');
-            const num = parseFloat(raw) || 0;
-            customValue = Math.round(num * 100);
-            updateCalculatorFromValue('custom');
-            // Keep cursor in place — don't reformat while typing
-        });
-        inputCustom.addEventListener('blur', () => {
-            // Reformat on focus loss
-            inputCustom.value = formatCurrencyUSD(customValue);
+            el.addEventListener('blur', () => {
+                // Reformat nicely on focus loss
+                updateInputDisplay(type);
+            });
         });
 
         // Listen to rate change
