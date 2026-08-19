@@ -853,8 +853,20 @@
         inputUsdt.addEventListener('beforeinput', (e) => handleNumericInput(e, 'usdt'));
         inputUsdt.addEventListener('keydown', (e) => handleKeyDown(e, 'usdt'));
 
-        inputCustom.addEventListener('beforeinput', (e) => handleNumericInput(e, 'custom'));
-        inputCustom.addEventListener('keydown', (e) => handleKeyDown(e, 'custom'));
+        // inputCustom uses free text editing (cursor positioning allowed)
+        inputCustom.addEventListener('input', () => {
+            if (isUpdatingCalculator) return;
+            // Parse what the user typed (accept dot or comma as decimal)
+            const raw = inputCustom.value.replace(/,/g, '').replace(/[^0-9.]/g, '');
+            const num = parseFloat(raw) || 0;
+            customValue = Math.round(num * 100);
+            updateCalculatorFromValue('custom');
+            // Keep cursor in place — don't reformat while typing
+        });
+        inputCustom.addEventListener('blur', () => {
+            // Reformat on focus loss
+            inputCustom.value = formatCurrencyUSD(customValue);
+        });
 
         // Listen to rate change
         inputCustomRateVal.addEventListener('change', () => {
@@ -963,6 +975,18 @@
                 try {
                     await navigator.clipboard.writeText(text);
                     showCopySuccess('copyUsdtBtn');
+                } catch (err) {
+                    console.error('Error copiando:', err);
+                }
+            }
+        });
+
+        document.getElementById('copyCustomBtn').addEventListener('click', async () => {
+            const text = document.getElementById('inputCustom').value;
+            if (text && text !== '') {
+                try {
+                    await navigator.clipboard.writeText(text);
+                    showCopySuccess('copyCustomBtn');
                 } catch (err) {
                     console.error('Error copiando:', err);
                 }
